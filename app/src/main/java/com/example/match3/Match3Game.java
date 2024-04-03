@@ -15,7 +15,6 @@ public class Match3Game extends AppCompatActivity {
 
     Button[][] buttons;
     Button reset;
-    TextView scoreTxt;
 
     private boolean checkX (Button[][] buttons, int y) {
 //        for (int i = 0; i < 5; i++) {
@@ -59,7 +58,7 @@ public class Match3Game extends AppCompatActivity {
         setContentView(R.layout.activity_match3_game);
 
         final int[] score = {0};
-        scoreTxt.findViewById(R.id.scoreTxt);
+        TextView scoretext = (TextView) findViewById(R.id.scoreTxt);
 
         buttons = new Button[5][5];
         int[] colors = {Color.RED,Color.GREEN,Color.BLUE,Color.YELLOW};
@@ -84,7 +83,7 @@ public class Match3Game extends AppCompatActivity {
                     if (checkX(buttons, finalI) || checkY(buttons, finalJ)) {
                         score[0]++;
 //                        updateScore;
-                        scoreTxt.setText("Score " + Integer.toString(score[0]));
+                        scoretext.setText("Score " + Integer.toString(score[0]));
                     }
                 });
             }
