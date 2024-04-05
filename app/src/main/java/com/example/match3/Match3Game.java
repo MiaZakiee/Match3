@@ -47,39 +47,51 @@ Match3Game extends AppCompatActivity {
         return false;
     }
 
-    private void isAdjacent (int[] prev, int[] curr) {
+    private boolean isAdjacent (int[] prev, int[] curr) {
         int x1 = prev[0];
         int y1 = prev[1];
         int x2 = curr[0];
         int y2 = curr[1];
 
-        if (buttons[x1 - 1][y1] == buttons[x2][y2]) {
-//            swap left
-            swapBtn(new int[]{x1 - 1, x2},curr);
+        if (x1 == x2 && y1 == y2) {
+            return false;
         }
-        else if (buttons[x1 + 1][y1] == buttons[x2][y2]) {
-//            swap right
-            swapBtn(new int[]{x1 + 1, x2},curr);
-        }
-        else if (buttons[x1][y1 - 1] == buttons[x2][y2]) {
-//            swap up
-            swapBtn(new int[]{x1, x2 - 1},curr);
-        }
-        else if (buttons[x1][y1 + 1] == buttons[x2][y2]) {
-            swapBtn(new int[]{x1, x2 + 1},curr);
+
+        try {
+            if (x1 - 1 >= 0) {
+                if (buttons[x1 - 1][y1] == buttons[x2][y2]) {
+//                  check left
+                    return true;
+                }
+            }
+            if (x1 + 1 <= 4) {
+                if (buttons[x1 + 1][y1] == buttons[x2][y2]) {
+//                    check right
+                    return true;
+                }
+            }
+            if (y1 - 1 >= 0) {
+                if (buttons[x1][y1 - 1] == buttons[x2][y2]) {
+//                  check up
+                    return true;
+                }
+            }
+            if (y1 + 1 <= 4) {
+                if (buttons[x1][y1 + 1] == buttons[x2][y2]) {
+//                    check right
+                    return true;
+                }
+            }
+
+            else if (buttons[x1][y1 + 1] == buttons[x2][y2]) {
 //            swap down
+                return true;
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            Toast toast = Toast.makeText(this, "yawa", Toast.LENGTH_LONG);
+            toast.show();
         }
-    }
-
-    private void swapBtn (int[] prev, int[] curr) {
-        int x1 = prev[0];
-        int y1 = prev[1];
-        int x2 = curr[0];
-        int y2 = curr[1];
-
-        String tempText = buttons[x1][y1].getText().toString();
-        buttons[x1][y1].setText(buttons[x2][y2].getText());
-        buttons[x2][y2].setText(tempText);
+        return false;
     }
 
     @Override
@@ -117,19 +129,37 @@ Match3Game extends AppCompatActivity {
                     if (toSwap[0] == 2) {
                         curr[0] = finalI;
                         curr[1] = finalJ;
-                        isAdjacent(prev,curr);
-                        toSwap[0] = 0;
+
+                        if (isAdjacent(prev,curr)) {
+                            int x1 = prev[0];
+                            int y1 = prev[1];
+                            int x2 = curr[0];
+                            int y2 = curr[1];
+
+                            String tempText = buttons[x1][y1].getText().toString();
+                            int tempColor = buttons[x1][y1].getCurrentTextColor();
+
+                            buttons[x1][y1].setText(buttons[x2][y2].getText());
+                            buttons[x1][y1].setBackgroundColor(buttons[x2][y2].getCurrentTextColor());
+                            buttons[x1][y1].setTextColor(buttons[x2][y2].getCurrentTextColor());
+
+                            buttons[x2][y2].setText(tempText);
+                            buttons[x2][y2].setBackgroundColor(tempColor);
+                            buttons[x2][y2].setTextColor(tempColor);
+                        }
+
+                        // score
+                        if (checkX(buttons) || checkY(buttons)) {
+                            score[0]++;
+//                        updateScore;
+                            scoretext.setText("Score " + Integer.toString(score[0]));
+                        }
+
+                        toSwap[0] = 1;
                     } else {
                         prev[0] = finalI;
                         prev[1] = finalJ;
                         toSwap[0]++;
-                    }
-
-                // score
-                    if (checkX(buttons) || checkY(buttons)) {
-                        score[0]++;
-//                        updateScore;
-                        scoretext.setText("Score " + Integer.toString(score[0]));
                     }
                 });
             }
@@ -138,6 +168,7 @@ Match3Game extends AppCompatActivity {
         reset = (Button) findViewById(R.id.buttonReset);
         reset.setOnClickListener(v -> {
             score[0] = 0;
+            toSwap[0] = 1;
             for (int i = 0; i < 5; i++) {
                 for (int j = 0; j < 5; j++) {
                     int temp = rand.nextInt(4);
