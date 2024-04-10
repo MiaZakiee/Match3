@@ -152,7 +152,7 @@ Match3Game extends AppCompatActivity {
                         if (checkX(buttons) || checkY(buttons)) {
                             score[0]++;
 //                        updateScore;
-                            scoretext.setText("Score " + Integer.toString(score[0]));
+                            scoretext.setText("Score: " + Integer.toString(score[0]));
                         }
 
                         toSwap[0] = 1;
@@ -169,6 +169,7 @@ Match3Game extends AppCompatActivity {
         reset.setOnClickListener(v -> {
             score[0] = 0;
             toSwap[0] = 1;
+            scoretext.setText("Score: " + Integer.toString(score[0]));
             for (int i = 0; i < 5; i++) {
                 for (int j = 0; j < 5; j++) {
                     int temp = rand.nextInt(4);
